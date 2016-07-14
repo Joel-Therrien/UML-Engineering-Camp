@@ -47,7 +47,7 @@ void loop()
   min = Time.minute();
   tmp = min/5;
   test = min-5*tmp; //should be zero if minutes are exactly equal to an increment of five minutes
-  if ( test==0 && wait ){   //take a measurement once every five minutes
+  if ( test==0 && !wait ){   //take a measurement once every five minutes
       P = getPressure();
       T = getTemperature();
       Serial.print("Absolute pressure: ");
@@ -61,7 +61,7 @@ void loop()
       graph.plot(x, T, streaming_tokens[1]); //Add a timestamped temperature data point to the graph
       wait=true;    //make sure that the measurement is only done once since loop will likely run multimple times during each minute
     }
-    else if( test!=0 && !wait){     //OK, now that the minute is passed, reset the wait flag
+    else if( test!=0 && wait){     //OK, now that the minute is passed, reset the wait flag
         wait=false;
     }
 }
