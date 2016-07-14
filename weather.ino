@@ -9,6 +9,7 @@
 SFE_BMP180 pressure;
 
 double baseline; // baseline pressure
+bool wait=false;
 
 char *streaming_tokens[NUM_TRACES] = {"<token #1>", "<token #2>"}; //Enter the tokens you generated under Plotly API settings
 
@@ -42,7 +43,6 @@ void loop()
 {
   float T,P;
   int min, tmp, test;
-  bool wait=false;
   // Get a new pressure reading:
   min = Time.minute();
   tmp = min/5;
