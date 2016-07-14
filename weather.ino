@@ -41,24 +41,29 @@ void setup()
 void loop()
 {
   float T,P;
-  
+  int min, tmp, test;
+  bool wait=false;
   // Get a new pressure reading:
-
-  P = getPressure();
-  T = getTemperature();
-  
-  Serial.print("Absolute pressure: ");
-  Serial.print(P,1);
-  Serial.print(" mbar, Temperature: ");
-  if (T >= 0.0) Serial.print(" "); // add a space for positive numbers
-  Serial.print(T,0);
-  Serial.println(" DegC");
-  
-  unsigned long x = millis(); //Variable to store the time in milliseconds that your Core has been alive
-    graph.plot(x, P, streaming_tokens[0]); //Add a timestamped pressure data point to the graph
-    graph.plot(x, T, streaming_tokens[1]); //Add a timestamped temperature data point to the graph
-  
-  delay(5000);  //wait five seconds between measurements
+  min = Time.minute();
+  tmp = min/5;
+  test = min-5*tmp; //should be zero if minutes are exactly equal to an increment of five minutes
+  if ( test==0 && wait ){   //take a measurement once every five minutes
+      P = getPressure();
+      T = getTemperature();
+      Serial.print("Absolute pressure: ");
+      Serial.print(P,1);
+      Serial.print(" mbar, Temperature: ");
+      if (T >= 0.0) Serial.print(" "); // add a space for positive numbers
+      Serial.print(T,0);
+      Serial.println(" DegC");
+      unsigned long x = millis(); //Variable to store the time in milliseconds that your Core has been alive
+      graph.plot(x, P, streaming_tokens[0]); //Add a timestamped pressure data point to the graph
+      graph.plot(x, T, streaming_tokens[1]); //Add a timestamped temperature data point to the graph
+      wait=true;    //make sure that the measurement is only done once since loop will likely run multimple times during each minute
+    }
+    else if( test!=0 && !wait){     //OK, now that the minute is passed, reset the wait flag
+        wait=false;
+    }
 }
 
 double getPressure()
